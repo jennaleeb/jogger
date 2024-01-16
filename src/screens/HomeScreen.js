@@ -5,12 +5,16 @@ import { Text, View, TouchableOpacity } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import tailwind from "tailwind-rn";
 import ResetIcon from '../components/icons/ResetIcon';
-import Config from "react-native-config";
+import AuthIcon from '../components/icons/AuthIcon';
+import { WebView } from 'react-native-webview';
 
 const HomeScreen = () => {
   const [responseData, setResponseData] = useState('');
   const [selectedDistance, setSelectedDistance] = useState(5.00);
   const [selectedTime, setSelectedTime] = useState(1200.00);
+  const [webViewOpen, setWebViewOpen] = useState(false);
+  const [authCode, setAuthCode] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   const resetData = () => {
     setResponseData('');
@@ -18,13 +22,44 @@ const HomeScreen = () => {
     setSelectedTime(1200.00);
   }
 
-  const token = Config.STRAVA_TOKEN;
+  // const token = Config.STRAVA_TOKEN;
+  const getAccessToken = async () => {
+    if (!authCode) {
+      console.log('no auth code, returning')
+      return;
+    }
 
-  const handleApiCall = async () => {
+    if (accessToken) {
+      return accessToken;
+    }
+
+    const url = 'https://www.strava.com/oauth/token';
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const body = {
+      'client_id': process.env.EXPO_PUBLIC_CLIENT_ID,
+      'client_secret': process.env.EXPO_PUBLIC_CLIENT_SECRET,
+      'code': authCode,
+      'grant_type': 'authorization_code'
+    }
+
+    try {
+      const response = await fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(body) });
+      const data = await response.json();
+      const accessToken = data["access_token"]
+      setAccessToken(accessToken);
+      return accessToken
+    } catch (error) {
+     console.log(error);
+    }
+  }
+
+  const postActivityData = async (accesToken) => {
     const url = 'https://www.strava.com/api/v3/activities';
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${accesToken}`,
     };
     const currentUtcTime = new Date().toUTCString();
 
@@ -39,15 +74,26 @@ const HomeScreen = () => {
     try {
       const response = await fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(body) });
       const data = await response.json();
-      if (data["errors"]?.length > 0) {
+      if (data["errors"]?.length > 0 || data["message"] == "error") {
         setResponseData(`Error: ${data["message"]}`)
       } else {
         setResponseData(`Success! Sent run of ${selectedDistance} km and ${formatTime(selectedTime)} minutes`);
+        return data;
       }
     } catch (error) {
       setResponseData(`Error: ${error}`)
     }
   };
+
+  const handleApiCall = async () => {
+    try {
+      const accessToken = await getAccessToken();
+      const result = await postActivityData(accessToken);
+      console.log(result)
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -115,23 +161,73 @@ const HomeScreen = () => {
   const resetComponent = () => {
     return(
       <TouchableOpacity onPress={resetData}>
-        <View style={tailwind("flex items-end")}>
-          <View style={tailwind("h-8 w-8 mb-6 mr-6")}>
-            <ResetIcon/>
-          </View>
+        <View style={tailwind("h-8 w-8")}>
+          <ResetIcon/>
         </View>
       </TouchableOpacity>
     )
   }
 
+  const handleOpenAuthView = () => {
+    setWebViewOpen(true);
+    setResponseData('');
+  }
+
+  const openAuthComponent = () => {
+    return(
+      <TouchableOpacity onPress={handleOpenAuthView}>
+        <View style={tailwind("h-8 w-8")}>
+          <AuthIcon/>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  const handleNavigationStateChange = (newNavState) => {
+    const url = newNavState.url;
+    console.log(url);
+    if (!url) {
+      return;
+    }
+
+    const match = url.match(/code=([^&]*)/);
+    const code = match ? match[1] : null;
+    setAuthCode(code);
+
+    if (code) {
+      setWebViewOpen(false);
+      console.log('success! - code:', code)
+    }
+  }
+
+  const authComponent = () => {
+    return(
+      webViewOpen && 
+      <WebView
+        source={{ uri: 'https://www.strava.com/oauth/authorize?client_id=119421&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=activity:write' }}
+        onNavigationStateChange={handleNavigationStateChange}
+        style={tailwind("w-full")}
+      />
+    )
+  }
+
   return (
-    <View style={tailwind("w-full")}>
-      {resetComponent()}
-      {distancePicker()}
-      {timePicker()}
-      {submitButton()}
-      <Text style={tailwind("text-center")}>{responseData}</Text>
-    </View>
+    <>
+      {
+        !webViewOpen &&
+        <View style={tailwind("flex-1 items-center justify-center")}>
+          <View style={tailwind("w-full flex flex-row justify-between p-4")}>
+            {openAuthComponent()}
+            {resetComponent()}
+          </View>
+          {distancePicker()}
+          {timePicker()}
+          {submitButton()}
+          <Text style={tailwind("text-center")}>{responseData}</Text>
+        </View>
+      }
+      {authComponent()}
+    </>
   );
 };
 
