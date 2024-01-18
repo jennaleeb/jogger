@@ -1,5 +1,13 @@
 {
   "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "b56187c7-fb0f-4e1a-b57f-bd4659bfe821"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.jennnaleeb.jogger"
+    }
   },
   "name": "Jogger",
   "displayName": "Jogger"
