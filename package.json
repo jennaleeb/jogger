@@ -3,6 +3,7 @@
     "@react-native-community/cli": "^13.2.0",
     "@react-native-community/cli-plugin-metro": "^13.2.0",
     "@react-native-picker/picker": "2.4.10",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^49.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
