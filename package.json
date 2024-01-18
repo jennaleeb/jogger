@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "@react-native-community/cli": "^13.2.0",
-    "@react-native-community/cli-plugin-metro": "^13.2.0",
     "@react-native-picker/picker": "2.4.10",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^49.0.3",
@@ -16,7 +14,9 @@
     "tailwind-rn": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.3"
+    "@babel/core": "^7.19.3",
+    "@react-native-community/cli": "^13.2.0",
+    "@react-native-community/cli-plugin-metro": "^13.2.0"
   },
   "scripts": {
     "start": "expo start",
