@@ -9,7 +9,8 @@
     "react-native-eject": "^0.2.0",
     "react-native-svg": "13.9.0",
     "react-native-webview": "13.2.2",
-    "tailwind-rn": "^3.0.1"
+    "tailwind-rn": "^3.0.1",
+    "expo-updates": "~0.18.19"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

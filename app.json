@@ -7,7 +7,14 @@
     },
     "ios": {
       "bundleIdentifier": "com.jennnaleeb.jogger"
-    }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b56187c7-fb0f-4e1a-b57f-bd4659bfe821"
+    },
+    "android": {}
   },
   "name": "Jogger",
   "displayName": "Jogger"
