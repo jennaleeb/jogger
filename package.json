@@ -1,15 +1,16 @@
 {
   "dependencies": {
+    "@react-native-community/cli-plugin-metro": "^12.3.3",
     "@react-native-picker/picker": "2.4.10",
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^49.0.3",
+    "expo-updates": "~0.18.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.6",
     "react-native-svg": "13.9.0",
     "react-native-webview": "13.2.2",
-    "tailwind-rn": "^3.0.1",
-    "expo-updates": "~0.18.19"
+    "tailwind-rn": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3"
