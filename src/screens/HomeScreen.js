@@ -112,7 +112,7 @@ const HomeScreen = () => {
       range.push(parseFloat(i.toFixed(3))); // Fix floating-point precision issues
     }
     return(
-      <View>
+      <View style={tailwind("flex w-full")}>
         <Text style={tailwind("font-bold text-center text-2xl")}>Distance</Text>
         <Picker
           selectedValue={selectedDistance}
@@ -134,8 +134,8 @@ const HomeScreen = () => {
       timeRange.push(t);
     }
     return(
-      <View>
-        <Text style={tailwind("font-bold text-center text-2xl")}>Elapsed timePicker</Text>
+      <View style={tailwind("flex w-full")}>
+        <Text style={tailwind("font-bold text-center text-2xl")}>Time</Text>
         <Picker
           selectedValue={selectedTime}
           onValueChange={(itemValue, itemIndex) => setSelectedTime(itemValue)}>
