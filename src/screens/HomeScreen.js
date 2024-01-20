@@ -61,10 +61,16 @@ const HomeScreen = () => {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accesToken}`,
     };
-    const currentUtcTime = new Date().toUTCString();
+    const currentDate = new Date();
+    const currentUtcTime = currentDate.toUTCString();
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
     const body = {
-      'name': 'jogger test run',
+      'name': `Treadmill - ${formattedDate} (🏃‍♂️💨)`,
       'start_date_local': currentUtcTime,
       'elapsed_time': selectedTime,
       'distance': selectedDistance * 1000, // convert to meters
